@@ -189,7 +189,7 @@ func getStackCommand(clientSetProvider k8s.ClientSetProvider) *cobra.Command {
 
 	stackRootCmd := &cobra.Command{
 		Use:     "clusterstack",
-		Aliases: []string{"clusterstacks", "clstrcsks", "clstrcsk", "csks","csk"},
+		Aliases: []string{"clusterstacks", "clstrcsks", "clstrcsk", "csks", "csk"},
 		Short:   "ClusterStack Commands",
 	}
 	stackRootCmd.AddCommand(
@@ -229,19 +229,20 @@ func getStoreCommand(clientSetProvider k8s.ClientSetProvider) *cobra.Command {
 }
 
 func getImportCommand(clientSetProvider k8s.ClientSetProvider) *cobra.Command {
-	stackFactory := &clusterstack.Factory{
-		Fetcher:   &registry.Fetcher{},
-		Relocator: &registry.Relocator{},
-	}
-
 	bpUploader := &buildpackage.Uploader{
 		Fetcher:   &registry.Fetcher{},
 		Relocator: &registry.Relocator{},
 	}
 
-	storeFactory := &clusterstore.Factory{Uploader: bpUploader}
-
-	return importcmds.NewImportCommand(clientSetProvider, importpkg.DefaultTimestampProvider(), storeFactory, stackFactory)
+	return importcmds.NewImportCommand(
+		clientSetProvider,
+		bpUploader,
+		&registry.Relocator{},
+		&registry.Fetcher{},
+		commands.Differ{},
+		importpkg.DefaultTimestampProvider(),
+		commands.NewConfirmationProvider(),
+	)
 }
 
 func getCompletionCommand() *cobra.Command {

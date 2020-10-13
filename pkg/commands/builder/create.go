@@ -5,11 +5,10 @@ package builder
 
 import (
 	"fmt"
-	corev1 "k8s.io/api/core/v1"
 
 	"github.com/pivotal/kpack/pkg/apis/build/v1alpha1"
 	"github.com/spf13/cobra"
-	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/pivotal/build-service-cli/pkg/builder"
@@ -61,7 +60,7 @@ kp builder create my-builder --tag my-registry.com/my-builder-tag --order /path/
 	cmd.Flags().StringVarP(&flags.stack, "stack", "s", defaultStack, "stack resource to use")
 	cmd.Flags().StringVar(&flags.store, "store", defaultStore, "buildpack store to use")
 	cmd.Flags().StringVarP(&flags.order, "order", "o", "", "path to buildpack order yaml")
-	cmd.Flags().StringSliceVarP(&flags.buildpacks, "buildpack","b", []string{} , "list of buildpacks to use")
+	cmd.Flags().StringSliceVarP(&flags.buildpacks, "buildpack", "b", []string{}, "list of buildpacks to use")
 	commands.SetDryRunOutputFlags(cmd)
 	_ = cmd.MarkFlagRequired("tag")
 	return cmd
@@ -78,7 +77,7 @@ type CommandFlags struct {
 
 func create(name string, flags CommandFlags, ch *commands.CommandHelper, cs k8s.ClientSet) (err error) {
 	bldr := &v1alpha1.Builder{
-		TypeMeta: metaV1.TypeMeta{
+		TypeMeta: metav1.TypeMeta{
 			Kind:       v1alpha1.BuilderKind,
 			APIVersion: "kpack.io/v1alpha1",
 		},
